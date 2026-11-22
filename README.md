@@ -39,3 +39,10 @@ A stream that ends immediately after the final chunk's CRLF, with no trailer sec
 The parser requires CRLF line endings. A chunk-size line may carry a chunk extension after a semicolon; the extension is ignored. Trailer values are trimmed of surrounding spaces and tabs. If a trailer name appears more than once, the last occurrence wins.
 
 `TrailerParseError` is exported for callers that want to catch parse failures specifically.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
